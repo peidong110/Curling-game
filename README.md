@@ -1,4 +1,4 @@
-Assignment#2 for 2406
+Assignment#3 for 2406
 This is a course project of COMP2406 in Carleton University. 
 This project is implemented by Tiancheng Zhao Student #100988646, Payton Pei Student# 101065299.
 The source code of this project is considered to be the intellectual property belongs to Tiancheng Zhao and Payton Pei. 
