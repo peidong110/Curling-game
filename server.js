@@ -4,9 +4,9 @@ const fs = require('fs');
 const url = require('url');
 
 const PORT = process.env.PORT || 3000
-
 app.listen(PORT)
 
+const ROOT_DIR = "html"
 
 const MIME_TYPES = {
   css: "text/css",
@@ -33,14 +33,14 @@ return MIME_TYPES['txt']
 }
 
 
-const ROOT_DIR = "html"
+
 //handle req and res
 function handler(request,response) {
     let urlObj = url.parse(request.url,true,false)
-
-    console.log(`REQUEST URL PATH : ${urlObj.pathname}`);
-    console.log(`REQUEST DIRECTORY : ${ROOT_DIR+urlObj.pathname}`);
-    console.log(`REQUEST METHOD : ${request.method}`);
+    console.log("\n============================")
+    console.log("PATHNAME: " + urlObj.pathname)
+    console.log("REQUEST: " + ROOT_DIR + urlObj.pathname)
+    console.log("METHOD: " + request.method)
 
     let receivedData = ""
 
@@ -49,21 +49,20 @@ function handler(request,response) {
     })
 
     request.on("end",function () {
-      console.log(`REQUEST END`);
-      console.log(`receivedData : ${receivedData}`);
-      console.log(`type : ${typeof receivedData}`);
+      console.log("REQUEST END: ")
+      console.log("received data: ", receivedData)
+      console.log("type: ", typeof receivedData)
 
       if (request.method=="GET") {
-
         if (urlObj.pathname === "/") {
           urlObj.pathname += "index.html"
         }
-
         fs.readFile(ROOT_DIR+urlObj.pathname,function (err,data) {
           if (err) {
-            console.log(err);
+            console.log("ERROR: " + JSON.stringify(err))
             response.writeHead(404)
             response.end(JSON.stringify(err))
+            return
           }
 
           response.writeHead(200,{
@@ -73,39 +72,31 @@ function handler(request,response) {
           response.end(data)
         })
       }
+    })
 
-
-    })//request end
-
-}//end handler
+}
 
 let clientNumber = 0
 
 io.on("connection",function (socket) {
-
   clientNumber = Object.keys(io.sockets.connected).length
-  console.log(clientNumber);
-    console.log('player number : '+clientNumber);
-    // console.log(socket.id);
-    socket.join('playground', () => {
-        let rooms = Object.keys(socket.rooms);
-        // console.log(rooms); // [ <socket.id>, 'room 237' ]
-        // io.to('room 237').emit('a new user has joined the room'); // broadcast to everyone in the room
-      });
-
-      if (clientNumber>2) {
-        socket.leave('playground',function () {
-          console.log('you are leaving');
-        })
-      }else {
-        socket.on("ballOBJ",function (data) {//ball coor
-          console.log(data);
-          io.emit("ballOBJ",data)
-        })
-      }
-
-
-
+  console.log('player number : '+clientNumber);
+  socket.join('board', () => {
+    let rooms = Object.keys(socket.rooms);
+  });
+  //console.log(Object.keys(io.sockets.connected).length)
+  // console.log(io.sockets.connected)
+  if (clientNumber>2) {
+    socket.leave('board',function () {
+      console.log('Room is full');
+    })
+  }else {
+    socket.on("ballMove",function (data) {
+      console.log(data);
+      //emit data to each sockets
+      io.sockets.emit("ballMove",data)
+    })
+  }
 })
 
 
