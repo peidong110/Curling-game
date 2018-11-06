@@ -1,27 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html>
   <head>
     <meta charset="utf-8">
     <title>assignment 3</title>
     <script src="jquery-1.11.3.js"></script>
     <script src="socket.io/socket.io.js"></script>
+    <style>
+    body {
+      background: #dddddd;
+    }
+    /*element selectors: */
+    canvas {
+      margin: 0px;
+      /*important here for padding to be 0 for mouse calculations */
+      padding: 0px;
+    }
+    /* class selectors: */
+    .canvas {
+      background: #ffffff;
+      border: thin inset #aaaaaa;
+    }
+    /*id selectors: */
+    #canvas1 {
+    }
+    </style>
   </head>
   <body>
-
-  <style media="screen">
-
-
-
-
-  </style>
-  <div id="draw1"></div>
-  <!-- <div id="draw2"></div> -->
-
-
-
-
-
+    <canvas id='canvas1' class='canvas' width='560' height='560'>
+      Canvas not supported
+    </canvas>
+    <canvas id='canvas2' class='canvas' width='200' height='560'>
+      Canvas not supported
+    </canvas>
   </body>
   <script src="client.js"></script>
-
 </html>
