@@ -145,7 +145,11 @@ function handleMouseMove(e) {
 
 function handleMouseUp(e) {
   console.log("mouse up")
-
+  // if(tempSpeedY>30){
+  //   tempSpeedY=30
+  // }else if(tempSpeedY<-30){
+  //   tempSpeedY=-30
+  // }
   ballBeingMoved.speedX = tempSpeedX
   ballBeingMoved.speedY = tempSpeedY
 
@@ -168,13 +172,8 @@ function ballUpdate(ball){
     ball.speedX = 0
     ball.speedY = 0
   }
-  // if(ball.x<=15 || ball.x>=canvas2.width-15){
-  //   ball.speedX *= -1
-  // }
-  // if(ball.y<=15 || ball.y>=canvas2.height-15){
-  //   ball.speedY *= -1
-  // }
   boundaryCollision(ball)
+  ballCollision(ball)
 }
 
 function boundaryCollision(ball){
@@ -192,6 +191,22 @@ function boundaryCollision(ball){
   }
   if(ball.y-ball.radius<=0 || ball.y+ball.radius>=canvas2.height){
     ball.speedY = 0
+  }
+}
+
+function ballCollision(ballMoving){
+  for(ball of balls){
+    if(ballMoving.x-ballMoving.radius>ball.x-ball.radius && ballMoving.x-ballMoving.radius<ball.x+ball.radius
+      || ballMoving.x+ballMoving.radius>ball.x-ball.radius && ballMoving.x+ballMoving.radius<ball.x+ball.radius){
+      if(ballMoving.y-ballMoving.radius>ball.y-ball.radius && ballMoving.y-ballMoving.radius<ball.y+ball.radius
+      || ballMoving.y+ballMoving.radius>ball.y-ball.radius && ballMoving.y+ballMoving.radius<ball.y+ball.radius){
+        ball.speedX = ballMoving.speedX
+        ball.speedY = ballMoving.speedY
+        ballMoving.speedX=0
+        ballMoving.speedY=0
+        console.log("collide: " + ballMoving.name + " to " + ball.name)
+      }
+    }
   }
 }
 
@@ -220,6 +235,6 @@ function handleTimer(){
 $(document).ready(function() {
 
   $("#canvas2").mousedown(handleMouseDown)
-  timer = setInterval(handleTimer, 50)
+  timer = setInterval(handleTimer, 30)
   drawCanvas()
 })
