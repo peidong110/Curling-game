@@ -1,17 +1,18 @@
 let ballBeingMoved;
 let tempSpeedX = 0;
 let tempSpeedY = 0;
+let friction = 0.97;
 
 
 let canvas1 = document.getElementById("canvas1")
 let canvas2 = document.getElementById("canvas2")
 let balls = [
-  {name:'ball1', x:170, y:500, radius:15, speedX:0, speedY:0, color:'yellow'},
-  {name:'ball2', x:130, y:90, radius:15, speedX:0, speedY:0, color:'yellow'},
-  {name:'ball3', x:77, y:420, radius:15, speedX:0, speedY:0, color:'yellow'},
-  {name:'ball4', x:50, y:60, radius:15, speedX:0, speedY:0, color:'red'},
-  {name:'ball5', x:18, y:300, radius:15, speedX:0, speedY:0, color:'red'},
-  {name:'ball6', x:180, y:570, radius:15, speedX:0, speedY:0, color:'red'}
+  {name:'ball1', x:170.0, y:500.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
+  {name:'ball2', x:130.0, y:90.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
+  {name:'ball3', x:77.0, y:420.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
+  {name:'ball4', x:50.0, y:60.0, radius:15, speedX:0.0, speedY:0.0, color:'red'},
+  {name:'ball5', x:18.0, y:300.0, radius:15, speedX:0.0, speedY:0.0, color:'red'},
+  {name:'ball6', x:180.0, y:570.0, radius:15, speedX:0.0, speedY:0.0, color:'red'}
 ]
 
 let socket = io("http://" + window.document.location.host)
@@ -23,7 +24,10 @@ socket.on('ballMove', function(data) {
     if(ball.name == ballData.name){
       ball.x = ballData.x
       ball.y = ballData.y
+      ball.speedX = ballData.speedX
+      ball.speedY = ballData.speedY
     }
+    ballUpdate(ball)
   }
   drawCanvas()
 })
@@ -154,18 +158,68 @@ function handleMouseUp(e) {
   drawCanvas() //redraw the canvas
 }
 
+function ballUpdate(ball){
+  if(Math.abs(ball.speedX)>1-friction || Math.abs(ball.speedY)>1-friction){
+    ball.speedX *= friction
+    ball.speedY *= friction
+    ball.x += ball.speedX
+    ball.y += ball.speedY
+  }else{
+    ball.speedX = 0
+    ball.speedY = 0
+  }
+  // if(ball.x<=15 || ball.x>=canvas2.width-15){
+  //   ball.speedX *= -1
+  // }
+  // if(ball.y<=15 || ball.y>=canvas2.height-15){
+  //   ball.speedY *= -1
+  // }
+  boundaryCollision(ball)
+}
+
+function boundaryCollision(ball){
+  //boundary bounce
+  // if(ball.x-ball.radius<0 || ball.x+ball.radius>canvas2.width){
+  //   ball.speedX *= -1
+  // }
+  // if(ball.y-ball.radius<0 || ball.y+ball.radius>canvas2.height){
+  //   ball.speedY *= -1
+  // }
+
+  //stop at the boundary
+  if(ball.x-ball.radius<=0 || ball.x+ball.radius>=canvas2.width){
+    ball.speedX = 0
+  }
+  if(ball.y-ball.radius<=0 || ball.y+ball.radius>=canvas2.height){
+    ball.speedY = 0
+  }
+}
+
+// function setDir(ball){
+//   if(ball.speedX>0){
+//     ball.directionX = 1
+//   }else{
+//     ball.directionX = -1
+//   }
+//   if(ball.speedY>0){
+//     ball.directionY = 1
+//   }else{
+//     ball.directionY = -1
+//   }
+// }
+
 function handleTimer(){
   for(ball of balls){
-    // FIXME: emit too frequent may cause ball glitch
     if(ball.speedX!=0 || ball.speedY!=0){
-      socket.emit("ballMove",JSON.stringify({name:ball.name, x:ball.x, y:ball.y}))
+      socket.emit("ballMove",JSON.stringify({name:ball.name, x:ball.x, y:ball.y, speedX: ball.speedX, speedY: ball.speedY}))
     }
+    ballUpdate(ball)
   }
 }
 
 $(document).ready(function() {
 
   $("#canvas2").mousedown(handleMouseDown)
-  timer = setInterval(handleTimer, 100)
+  timer = setInterval(handleTimer, 50)
   drawCanvas()
 })
