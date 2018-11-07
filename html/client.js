@@ -1,17 +1,32 @@
 let ballBeingMoved;
+let tempSpeedX = 0;
+let tempSpeedY = 0;
 
-let socket = io("http://" + window.document.location.host)
+
 let canvas1 = document.getElementById("canvas1")
 let canvas2 = document.getElementById("canvas2")
-
 let balls = [
-  {name:'ball1', x:170, y:500, radius:15, color:'yellow'},
-  {name:'ball2', x:130, y:90, radius:15, color:'yellow'},
-  {name:'ball3', x:77, y:420, radius:15, color:'yellow'},
-  {name:'ball4', x:50, y:60, radius:15, color:'red'},
-  {name:'ball5', x:18, y:300, radius:15, color:'red'},
-  {name:'ball6', x:180, y:570, radius:15, color:'red'}
+  {name:'ball1', x:170, y:500, radius:15, speedX:0, speedY:0, color:'yellow'},
+  {name:'ball2', x:130, y:90, radius:15, speedX:0, speedY:0, color:'yellow'},
+  {name:'ball3', x:77, y:420, radius:15, speedX:0, speedY:0, color:'yellow'},
+  {name:'ball4', x:50, y:60, radius:15, speedX:0, speedY:0, color:'red'},
+  {name:'ball5', x:18, y:300, radius:15, speedX:0, speedY:0, color:'red'},
+  {name:'ball6', x:180, y:570, radius:15, speedX:0, speedY:0, color:'red'}
 ]
+
+let socket = io("http://" + window.document.location.host)
+socket.on('ballMove', function(data) {
+  console.log("data: " + data)
+  console.log("typeof: " + typeof data)
+  let ballData = JSON.parse(data)
+  for(ball of balls){
+    if(ball.name == ballData.name){
+      ball.x = ballData.x
+      ball.y = ballData.y
+    }
+  }
+  drawCanvas()
+})
 
 function drawCanvas() {
   //draw right canvas2
@@ -106,13 +121,17 @@ function handleMouseDown(e) {
 
 function handleMouseMove(e) {
   console.log("mouse move");
-
+  let origX = ballBeingMoved.x
+  let origY = ballBeingMoved.y
   //get mouse location relative to canvas top left
   let realPositionX = e.pageX - canvas2.offsetLeft;
   let realPositionY = e.pageY - canvas2.offsetTop;
 
   ballBeingMoved.x = realPositionX + deltaX
   ballBeingMoved.y = realPositionY + deltaY
+
+  tempSpeedX = ballBeingMoved.x - origX;
+  tempSpeedY = ballBeingMoved.y - origY;
 
   e.stopPropagation()
 
@@ -121,6 +140,10 @@ function handleMouseMove(e) {
 
 function handleMouseUp(e) {
   console.log("mouse up")
+
+  ballBeingMoved.speedX = tempSpeedX
+  ballBeingMoved.speedY = tempSpeedY
+
   e.stopPropagation()
 
   //remove mouse move and mouse up handlers but leave mouse down handler
@@ -130,8 +153,16 @@ function handleMouseUp(e) {
   drawCanvas() //redraw the canvas
 }
 
+function handleTimer(){
+  for(ball of balls){
+    // FIXME: emit too frequent may cause ball glitch
+    socket.emit("ballMove",JSON.stringify({name:ball.name, x:ball.x, y:ball.y}))
+  }
+}
+
 $(document).ready(function() {
 
   $("#canvas2").mousedown(handleMouseDown)
+  timer = setInterval(handleTimer, 100)
   drawCanvas()
 })
