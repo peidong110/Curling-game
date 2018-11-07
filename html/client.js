@@ -35,18 +35,17 @@ function drawCanvas() {
   for (ball of balls){
     var context2 = canvas2.getContext('2d');
     drawOvalShape(context2, ball.x, ball.y, 15, 15);
-    context2.fillStyle = '#525050';
+    context2.fillStyle = '#999999';
     context2.fill();
-
+    context2.stroke();
     drawOvalShape(context2, ball.x, ball.y, 8, 8);
     if(ball.color == 'yellow'){
       context2.fillStyle = '#ff0000';
-      context2.fill();
     }
     if(ball.color == 'red'){
       context2.fillStyle = '#ffff00';
-      context2.fill();
     }
+    context2.fill();
   }
 }
 
