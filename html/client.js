@@ -132,6 +132,7 @@ function handleMouseMove(e) {
 
   tempSpeedX = ballBeingMoved.x - origX;
   tempSpeedY = ballBeingMoved.y - origY;
+  socket.emit("ballMove",JSON.stringify({name:ballBeingMoved.name, x:ballBeingMoved.x, y:ballBeingMoved.y}))
 
   e.stopPropagation()
 
@@ -156,7 +157,9 @@ function handleMouseUp(e) {
 function handleTimer(){
   for(ball of balls){
     // FIXME: emit too frequent may cause ball glitch
-    socket.emit("ballMove",JSON.stringify({name:ball.name, x:ball.x, y:ball.y}))
+    if(ball.speedX!=0 || ball.speedY!=0){
+      socket.emit("ballMove",JSON.stringify({name:ball.name, x:ball.x, y:ball.y}))
+    }
   }
 }
 
