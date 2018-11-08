@@ -6,6 +6,9 @@ let friction = 0.97;
 
 let canvas1 = document.getElementById("canvas1")
 let canvas2 = document.getElementById("canvas2")
+var context1 = canvas1.getContext('2d');
+var context2 = canvas2.getContext('2d');
+
 let balls = [
   {name:'ball1', x:170.0, y:500.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
   {name:'ball2', x:130.0, y:90.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
@@ -21,7 +24,7 @@ socket.on('ballMove', function(data) {
   console.log("typeof: " + typeof data)
   let ballData = JSON.parse(data)
   for(ball of balls){
-    if(ball.name == ballData.name){
+    if(ball.name === ballData.name){
       ball.x = ballData.x
       ball.y = ballData.y
       ball.speedX = ballData.speedX
@@ -31,10 +34,26 @@ socket.on('ballMove', function(data) {
   }
   drawCanvas()
 })
-
+function handlePlayerOne() {
+  let userText1 = $('#Player1').val(); //get text from user text input field
+  if (userText1 && userText1 !== ''){
+    console.log("This is player 1's name "+`${userText1}`)
+  }
+  // let userText = $('#userTextField').val(); //get text from user text input field
+  // if (userText && userText !== '') {
+  //   let textDiv = document.getElementById("text-area")
+  //   textDiv.innerHTML = textDiv.innerHTML + `<p> ${userText}</p>`
+}
+function handlePlayerTwo() {
+  let userText2 = $('#Player2').val(); //get text from user text input field
+  if (userText2 && userText2 !== ''){
+    console.log("This player 2's name "+`${userText2}`)
+  }
+}
 function drawCanvas() {
   //draw right canvas2
-  var context2 = canvas2.getContext('2d');
+  // var context2 = canvas2.getContext('2d');
+
   context2.clearRect(0, 0, canvas2.width, canvas2.height);
   drawOvalShape(context2, canvas2.width/2, canvas2.height/6, 80, 80);
   context2.fillStyle = '#0000ff';
@@ -51,23 +70,22 @@ function drawCanvas() {
 
   //draw balls
   for (ball of balls){
-    var context2 = canvas2.getContext('2d');
     drawOvalShape(context2, ball.x, ball.y, ball.radius, ball.radius);
     context2.fillStyle = '#999999';
     context2.fill();
     context2.stroke();
     drawOvalShape(context2, ball.x, ball.y, ball.radius-7, ball.radius-7);
-    if(ball.color == 'yellow'){
+    if(ball.color === 'yellow'){
       context2.fillStyle = '#ff0000';
     }
-    if(ball.color == 'red'){
+    if(ball.color === 'red'){
       context2.fillStyle = '#ffff00';
     }
     context2.fill();
   }
 
   //draw left canvas1
-  var context1 = canvas1.getContext('2d');
+  // var context1 = canvas1.getContext('2d');
   // drawOvalShape(context1, canvas1.width/2, canvas1.height/2, 240, 240);
   // context1.fillStyle = '#0000ff';
   // context1.fill();
