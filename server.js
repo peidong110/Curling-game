@@ -77,26 +77,66 @@ function handler(request,response) {
 }
 
 let clientNumber = 0
+let players = []
+let playerWait = []
+let start = true
 
 io.on("connection",function (socket) {
   clientNumber = Object.keys(io.sockets.connected).length
-  console.log('player number : '+clientNumber);
+  //console.log(Object.keys(io.sockets.connected))
+  console.log('player number : '+clientNumber)
   socket.join('board', () => {
     let rooms = Object.keys(socket.rooms);
   });
-  //console.log(Object.keys(io.sockets.connected).length)
-  // console.log(io.sockets.connected)
-  if (clientNumber>2) {
-    socket.leave('board',function () {
-      console.log('Room is full');
-    })
-  }else {
-    socket.on("ballMove",function (data) {
-      console.log(data);
-      //emit data to each sockets
-      io.sockets.emit("ballMove",data)
-    })
-  }
+  socket.on("ballMove",function (data) {
+    //console.log(data)
+    //emit data to each sockets
+    io.sockets.emit("ballMove",data)
+  })
+  socket.on("players",function (data) {
+    if(clientNumber>2){
+      socket.leave('board',function () {
+        console.log('Room is full')
+      })
+      playerWait.push(socket)
+    }else{
+      players.push(socket)
+      // Object.keys(io.sockets.connected).forEach(function (id) {
+      //   if(socket.id == id){
+      //     console.log(socket.id)
+      //   }
+      // })
+      if(start){
+        io.sockets.emit("yourTurn", socket.id)
+        console.log(socket.id)
+        start = false
+      }
+    }
+  })
+  socket.on("switchTurn", function (data){
+    for(playerObj of players){
+      if(playerObj.id != data){
+        console.log(data + "'s turn")
+        socket.broadcast.to(playerObj.id).emit("yourTurn", playerObj.id)
+      }
+    }
+  })
+  // socket.on("disconnect", function(){
+  //   console.log(socket.id + "disconnect")
+  //   let tempPlayer = playerWait.shift()
+  //   if(tempPlayer!=null){
+  //     players.push(tempPlayer)
+  //     io.sockets.emit("searchPlayer", tempPlayer)
+  //     // Object.keys(io.sockets.connected).forEach(function (id) {
+  //     //   console.log("id " + Object.keys(io.sockets.connected)[id].disconnect(true))
+  //     // })
+  //     console.log(socket.playerName + "disconnect")
+  //   }
+  // })
+  // socket.on("playerFound", function(){
+  //   console.log(Object.keys(socket.id) + " connect")
+  //   socket.connect("http://" + window.document.location.host, {'forceNew': true});
+  // })
 })
 
 
