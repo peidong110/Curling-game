@@ -38,7 +38,9 @@ function handlePlayerOne() {
   let userText1 = $('#Player1').val(); //get text from user text input field
   if (userText1 && userText1 !== ''){
     console.log("This is player 1's name "+`${userText1}`)
+    return true;
   }
+    return false;
   // let userText = $('#userTextField').val(); //get text from user text input field
   // if (userText && userText !== '') {
   //   let textDiv = document.getElementById("text-area")
@@ -48,7 +50,9 @@ function handlePlayerTwo() {
   let userText2 = $('#Player2').val(); //get text from user text input field
   if (userText2 && userText2 !== ''){
     console.log("This player 2's name "+`${userText2}`)
+    return true;
   }
+  return false;
 }
 function drawCanvas() {
   //draw right canvas2
@@ -118,29 +122,31 @@ function getBallAtLocation(mouseX, mouseY){
 }
 
 function handleMouseDown(e) {
+  if (handlePlayerOne() === true && handlePlayerTwo() === true) {
+    let realPositionX = e.pageX - canvas2.offsetLeft;
+    let realPositionY = e.pageY - canvas2.offsetTop;
+    console.log("mouse down:" + realPositionX + ", " + realPositionY)
 
-  let realPositionX = e.pageX - canvas2.offsetLeft;
-  let realPositionY = e.pageY - canvas2.offsetTop;
-  console.log("mouse down:" + realPositionX + ", " + realPositionY)
+    ballBeingMoved = getBallAtLocation(realPositionX, realPositionY)
 
-  ballBeingMoved = getBallAtLocation(realPositionX, realPositionY)
+    if (ballBeingMoved != null) {
+      deltaX = ballBeingMoved.x - realPositionX
+      deltaY = ballBeingMoved.y - realPositionY
+      //attache mouse move and mouse up handlers
+      $("#canvas2").mousemove(handleMouseMove)
+      $("#canvas2").mouseup(handleMouseUp)
+    }
 
-  if (ballBeingMoved != null) {
-    deltaX = ballBeingMoved.x - realPositionX
-    deltaY = ballBeingMoved.y - realPositionY
-    //attache mouse move and mouse up handlers
-    $("#canvas2").mousemove(handleMouseMove)
-    $("#canvas2").mouseup(handleMouseUp)
+    // Stop propagation of the event and stop any default
+    //  browser action
+    e.stopPropagation()
+    e.preventDefault()
+
+    drawCanvas()
+
+    var context2 = canvas2.getContext('2d');
+
   }
-
-  // Stop propagation of the event and stop any default
-  //  browser action
-  e.stopPropagation()
-  e.preventDefault()
-
-  drawCanvas()
-
-  var context2 = canvas2.getContext('2d');
 }
 
 function handleMouseMove(e) {
