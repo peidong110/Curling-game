@@ -121,26 +121,41 @@ function handleMouseDown(e) {
   e.preventDefault()
 
   drawCanvas()
+
+  var context2 = canvas2.getContext('2d');
 }
 
 function handleMouseMove(e) {
   console.log("mouse move");
-  let origX = ballBeingMoved.x
-  let origY = ballBeingMoved.y
   //get mouse location relative to canvas top left
   let realPositionX = e.pageX - canvas2.offsetLeft;
   let realPositionY = e.pageY - canvas2.offsetTop;
 
-  ballBeingMoved.x = realPositionX + deltaX
-  ballBeingMoved.y = realPositionY + deltaY
+  let shootX = realPositionX + deltaX
+  let shootY = realPositionY + deltaY
 
-  tempSpeedX = ballBeingMoved.x - origX;
-  tempSpeedY = ballBeingMoved.y - origY;
+  tempSpeedX = (ballBeingMoved.x - shootX)/5;
+  tempSpeedY = (ballBeingMoved.y - shootY)/5;
+  //speedlimit 30
+  if(tempSpeedY>30){
+    tempSpeedY=30
+  }else if(tempSpeedY<-30){
+    tempSpeedY=-30
+  }
+
+
+  //socket emit ballMove obj
   socket.emit("ballMove",JSON.stringify({name:ballBeingMoved.name, x:ballBeingMoved.x, y:ballBeingMoved.y}))
 
   e.stopPropagation()
 
   drawCanvas()
+  //draw shooting line
+  var context2 = canvas2.getContext('2d');
+  context2.beginPath()
+  context2.moveTo(ballBeingMoved.x,ballBeingMoved.y)
+  context2.lineTo(shootX,shootY)
+  context2.stroke()
 }
 
 function handleMouseUp(e) {
