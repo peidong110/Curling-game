@@ -3,8 +3,10 @@ let tempSpeedX = 0;
 let tempSpeedY = 0;
 let friction = 0.97;
 //set yourTurn to false in order to change
+
 let yourTurn = false;
 //creation of two balls
+
 let canvas1 = document.getElementById("canvas1")
 let canvas2 = document.getElementById("canvas2")
 let balls = [
@@ -19,14 +21,14 @@ let balls = [
 
 let socket = io("http://" + window.document.location.host)
 var playerName = window.prompt("Please Enter Player Name", "")
-socket.emit('players',JSON.stringify({playerName:playerName}))
+socket.emit('players', socket.id)
 
-socket.on('searchPlayer', function(data){
-  if(playerName == data.playerName){
-    socket.emit("playerFound", JSON.stringify({playerName:playerName}))
-    window.alert("sometext");
-  }
-})
+// socket.on('searchPlayer', function(data){
+//   if(playerName == data.playerName){
+//     socket.emit("playerFound", JSON.stringify({playerName:playerName}))
+//     window.alert("sometext");
+//   }
+// })
 socket.on('ballMove', function(data) {
   console.log("data: " + data)
   console.log("typeof: " + typeof data)
@@ -76,7 +78,21 @@ function drawCanvas() {
     }
     context2.fill();
   }
+
+  //draw left canvas1
   var context1 = canvas1.getContext('2d');
+  // drawOvalShape(context1, canvas1.width/2, canvas1.height/2, 240, 240);
+  // context1.fillStyle = '#0000ff';
+  // context1.fill();
+  // drawOvalShape(context1, canvas1.width/2, canvas1.height/2, 180, 180);
+  // context1.fillStyle = '#ffffff';
+  // context1.fill();
+  // drawOvalShape(context1, canvas1.width/2, canvas1.height/2, 120, 120);
+  // context1.fillStyle = '#ff0000';
+  // context1.fill();
+  // drawOvalShape(context1, canvas1.width/2, canvas1.height/2, 60, 60);
+  // context1.fillStyle = '#ffffff';
+  // context1.fill();
   context1.clearRect(0, 0, canvas1.width, canvas1.height);
   context1.drawImage(canvas2, 0,0,canvas2.width,canvas2.height/3,0,0,canvas1.width,canvas1.height);
 }
@@ -160,9 +176,16 @@ function handleMouseMove(e) {
 
 function handleMouseUp(e) {
   console.log("mouse up")
+  // if(tempSpeedY>30){
+  //   tempSpeedY=30
+  // }else if(tempSpeedY<-30){
+  //   tempSpeedY=-30
+  // }
   ballBeingMoved.speedX = tempSpeedX
   ballBeingMoved.speedY = tempSpeedY
+
   e.stopPropagation()
+
   //remove mouse move and mouse up handlers but leave mouse down handler
   $("#canvas2").off("mousemove", handleMouseMove); //remove mouse move handler
   $("#canvas2").off("mouseup", handleMouseUp); //remove mouse up handler
@@ -176,6 +199,11 @@ socket.on("yourTurn", function(data){
   console.log(data)
   window.alert("Your Turn");
   yourTurn = true;
+})
+
+socket.on("showAlert", function(data){
+  console.log(data + "received alert")
+  window.alert("Room is Full")
 })
 
 function ballUpdate(ball){
@@ -195,6 +223,15 @@ function ballUpdate(ball){
 
 function boundaryCollision(ball){
   //to check if it hits the boundary of the wall
+  //boundary bounce
+  // if(ball.x-ball.radius<0 || ball.x+ball.radius>canvas2.width){
+  //   ball.speedX *= -1
+  // }
+  // if(ball.y-ball.radius<0 || ball.y+ball.radius>canvas2.height){
+  //   ball.speedY *= -1
+  // }
+
+  //stop at the boundary
   if(ball.x-ball.radius<=0 || ball.x+ball.radius>=canvas2.width){
     ball.speedX = 0
   }
@@ -202,6 +239,7 @@ function boundaryCollision(ball){
     ball.speedY = 0
   }
 }
+
 function ballCollision(ballMoving){
   //detect the moving balls to do the colision detect.
   for(ball of balls){
@@ -218,6 +256,20 @@ function ballCollision(ballMoving){
     }
   }
 }
+
+// function setDir(ball){
+//   if(ball.speedX>0){
+//     ball.directionX = 1
+//   }else{
+//     ball.directionX = -1
+//   }
+//   if(ball.speedY>0){
+//     ball.directionY = 1
+//   }else{
+//     ball.directionY = -1
+//   }
+// }
+
 function handleTimer(){
   for(ball of balls){
     if(ball.speedX!=0 || ball.speedY!=0){
@@ -226,6 +278,7 @@ function handleTimer(){
     ballUpdate(ball)
   }
 }
+
 $(document).ready(function() {
   //ready and call the function
   $("#canvas2").mousedown(handleMouseDown)
