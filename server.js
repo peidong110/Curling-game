@@ -121,25 +121,9 @@ io.on("connection",function (socket) {
       }
     }
   })
-  // socket.on("disconnect", function(){
-  //   console.log(socket.id + "disconnect")
-  //   let tempPlayer = playerWait.shift()
-  //   if(tempPlayer!=null){
-  //     players.push(tempPlayer)
-  //     io.sockets.emit("searchPlayer", tempPlayer)
-  //     // Object.keys(io.sockets.connected).forEach(function (id) {
-  //     //   console.log("id " + Object.keys(io.sockets.connected)[id].disconnect(true))
-  //     // })
-  //     console.log(socket.playerName + "disconnect")
-  //   }
-  // })
-  // socket.on("playerFound", function(){
-  //   console.log(Object.keys(socket.id) + " connect")
-  //   socket.connect("http://" + window.document.location.host, {'forceNew': true});
-  // })
 })
 
 
 console.log("Server Running at PORT: 3000  CNTL-C to quit")
 console.log("To Test:")
-console.log("Open several browsers at: http://localhost:3000/")
+console.log("Open several browsers at: http://localhost:3000/assignment3.html")

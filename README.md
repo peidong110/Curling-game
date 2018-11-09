@@ -19,16 +19,19 @@ Node Version: 8.11.1 <br />
 NPM Version: 6.4.1 <br />
 
 Install: <br />
-No module required for this assignment <br />
+socket.io is required for this programme<br />
 
 Test Instruction: <br />
+0.You need to install this socket.io module for this project.<br />
 1.Locate the file directory that has server.js <br />
 2.Type node server.js in terminal <br />
-3.Open http://localhost:3000 with browser in two different tabs <br />
-4.Try to click the ball, drag the balls and move the balls.<br />
-5.The balls will bounce back if it hits the wall or another balls.
-Issue: <br />
-1.We may not be able to accomplish the ball will move with internia. But when you clicked the ball it will still have the expected result as the video demonstrates.<br />
-2.The resolution of the big picture is not clear enough since we just made a deep copy of the right one.<br />
-3.We draw them in two different canvases<br />
+3.Open http://localhost:3000/assignment3 with browser in a tab and enter the name <br />
+4.Open another http://localhost:3000/assignment3 and enter the name<br />
+5.Open another with the same address and this tab will be spectating the game.<br />
 
+
+Issue: <br />
+1.we may not be able to pull the stone and release it, but we make it like the way the video demonstrate for 1406<br />
+2.The resolution of the big picture on the left hand side is not clear enough since we just made a deep copy of the right one.<br />
+3.We draw them in two different canvases<br />
+4.You need to click the screen to skip your round, We may not be able to let user willingly to stop his turn and become a spectator. We spend so much time on this assignment and it's really hard to accomplish this since we are not really familar with the socket.io module.<br />

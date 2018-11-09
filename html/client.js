@@ -2,12 +2,13 @@ let ballBeingMoved;
 let tempSpeedX = 0;
 let tempSpeedY = 0;
 let friction = 0.97;
-
+//set yourTurn to false in order to change
 let yourTurn = false;
-
+//creation of two balls
 let canvas1 = document.getElementById("canvas1")
 let canvas2 = document.getElementById("canvas2")
 let balls = [
+//set their initial status of the balls
   {name:'ball1', x:170.0, y:500.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
   {name:'ball2', x:130.0, y:90.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
   {name:'ball3', x:77.0, y:420.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
@@ -75,32 +76,21 @@ function drawCanvas() {
     }
     context2.fill();
   }
-
-  //draw left canvas1
   var context1 = canvas1.getContext('2d');
-  // drawOvalShape(context1, canvas1.width/2, canvas1.height/2, 240, 240);
-  // context1.fillStyle = '#0000ff';
-  // context1.fill();
-  // drawOvalShape(context1, canvas1.width/2, canvas1.height/2, 180, 180);
-  // context1.fillStyle = '#ffffff';
-  // context1.fill();
-  // drawOvalShape(context1, canvas1.width/2, canvas1.height/2, 120, 120);
-  // context1.fillStyle = '#ff0000';
-  // context1.fill();
-  // drawOvalShape(context1, canvas1.width/2, canvas1.height/2, 60, 60);
-  // context1.fillStyle = '#ffffff';
-  // context1.fill();
   context1.clearRect(0, 0, canvas1.width, canvas1.height);
   context1.drawImage(canvas2, 0,0,canvas2.width,canvas2.height/3,0,0,canvas1.width,canvas1.height);
 }
 
 function drawOvalShape(context, center_x, center_y, width, height){
+  //draw the rings
   context.beginPath()
   context.ellipse(center_x, center_y, width, height, 90 * Math.PI/180, 0, 2 * Math.PI);
+  //stroke the style
   context.stroke();
 }
 
 function getBallAtLocation(mouseX, mouseY){
+  //get current location of the balls
   for (ball of balls){
     if(mouseX>ball.x-ball.radius && mouseX<ball.x+ball.radius && mouseY>ball.y-ball.radius && mouseY<ball.y+ball.radius){
       console.log('ballBeingMoved: ' + ball.name)
@@ -170,16 +160,9 @@ function handleMouseMove(e) {
 
 function handleMouseUp(e) {
   console.log("mouse up")
-  // if(tempSpeedY>30){
-  //   tempSpeedY=30
-  // }else if(tempSpeedY<-30){
-  //   tempSpeedY=-30
-  // }
   ballBeingMoved.speedX = tempSpeedX
   ballBeingMoved.speedY = tempSpeedY
-
   e.stopPropagation()
-
   //remove mouse move and mouse up handlers but leave mouse down handler
   $("#canvas2").off("mousemove", handleMouseMove); //remove mouse move handler
   $("#canvas2").off("mouseup", handleMouseUp); //remove mouse up handler
@@ -196,6 +179,7 @@ socket.on("yourTurn", function(data){
 })
 
 function ballUpdate(ball){
+  //update the location of balls, with the actual friction rate.
   if(Math.abs(ball.speedX)>1-friction || Math.abs(ball.speedY)>1-friction){
     ball.speedX *= friction
     ball.speedY *= friction
@@ -210,15 +194,7 @@ function ballUpdate(ball){
 }
 
 function boundaryCollision(ball){
-  //boundary bounce
-  // if(ball.x-ball.radius<0 || ball.x+ball.radius>canvas2.width){
-  //   ball.speedX *= -1
-  // }
-  // if(ball.y-ball.radius<0 || ball.y+ball.radius>canvas2.height){
-  //   ball.speedY *= -1
-  // }
-
-  //stop at the boundary
+  //to check if it hits the boundary of the wall
   if(ball.x-ball.radius<=0 || ball.x+ball.radius>=canvas2.width){
     ball.speedX = 0
   }
@@ -226,8 +202,8 @@ function boundaryCollision(ball){
     ball.speedY = 0
   }
 }
-
 function ballCollision(ballMoving){
+  //detect the moving balls to do the colision detect.
   for(ball of balls){
     if(ballMoving.x-ballMoving.radius>ball.x-ball.radius && ballMoving.x-ballMoving.radius<ball.x+ball.radius
       || ballMoving.x+ballMoving.radius>ball.x-ball.radius && ballMoving.x+ballMoving.radius<ball.x+ball.radius){
@@ -242,20 +218,6 @@ function ballCollision(ballMoving){
     }
   }
 }
-
-// function setDir(ball){
-//   if(ball.speedX>0){
-//     ball.directionX = 1
-//   }else{
-//     ball.directionX = -1
-//   }
-//   if(ball.speedY>0){
-//     ball.directionY = 1
-//   }else{
-//     ball.directionY = -1
-//   }
-// }
-
 function handleTimer(){
   for(ball of balls){
     if(ball.speedX!=0 || ball.speedY!=0){
@@ -264,8 +226,8 @@ function handleTimer(){
     ballUpdate(ball)
   }
 }
-
 $(document).ready(function() {
+  //ready and call the function
   $("#canvas2").mousedown(handleMouseDown)
   timer = setInterval(handleTimer, 30)
   drawCanvas()
