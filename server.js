@@ -113,10 +113,13 @@ io.on("connection",function (socket) {
       //     console.log(socket.id)
       //   }
       // })
-      if(start){
+      // if(start){
+      //   io.sockets.emit("yourTurn", socket.id)
+      //   console.log(socket.id)
+      //   start = false
+      // }
+      if(clientNumber==2){
         io.sockets.emit("yourTurn", socket.id)
-        console.log(socket.id)
-        start = false
       }
     }
   })
