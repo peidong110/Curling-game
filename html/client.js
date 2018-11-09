@@ -2,15 +2,12 @@ let ballBeingMoved;
 let tempSpeedX = 0;
 let tempSpeedY = 0;
 let friction = 0.97;
-//set yourTurn to false in order to change
 
 let yourTurn = false;
-//creation of two balls
 
 let canvas1 = document.getElementById("canvas1")
 let canvas2 = document.getElementById("canvas2")
 let balls = [
-//set their initial status of the balls
   {name:'ball1', x:170.0, y:500.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
   {name:'ball2', x:130.0, y:90.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
   {name:'ball3', x:77.0, y:420.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
@@ -98,15 +95,12 @@ function drawCanvas() {
 }
 
 function drawOvalShape(context, center_x, center_y, width, height){
-  //draw the rings
   context.beginPath()
   context.ellipse(center_x, center_y, width, height, 90 * Math.PI/180, 0, 2 * Math.PI);
-  //stroke the style
   context.stroke();
 }
 
 function getBallAtLocation(mouseX, mouseY){
-  //get current location of the balls
   for (ball of balls){
     if(mouseX>ball.x-ball.radius && mouseX<ball.x+ball.radius && mouseY>ball.y-ball.radius && mouseY<ball.y+ball.radius){
       console.log('ballBeingMoved: ' + ball.name)
@@ -207,7 +201,6 @@ socket.on("showAlert", function(data){
 })
 
 function ballUpdate(ball){
-  //update the location of balls, with the actual friction rate.
   if(Math.abs(ball.speedX)>1-friction || Math.abs(ball.speedY)>1-friction){
     ball.speedX *= friction
     ball.speedY *= friction
@@ -222,7 +215,6 @@ function ballUpdate(ball){
 }
 
 function boundaryCollision(ball){
-  //to check if it hits the boundary of the wall
   //boundary bounce
   // if(ball.x-ball.radius<0 || ball.x+ball.radius>canvas2.width){
   //   ball.speedX *= -1
@@ -241,7 +233,6 @@ function boundaryCollision(ball){
 }
 
 function ballCollision(ballMoving){
-  //detect the moving balls to do the colision detect.
   for(ball of balls){
     if(ballMoving.x-ballMoving.radius>ball.x-ball.radius && ballMoving.x-ballMoving.radius<ball.x+ball.radius
       || ballMoving.x+ballMoving.radius>ball.x-ball.radius && ballMoving.x+ballMoving.radius<ball.x+ball.radius){
@@ -280,7 +271,6 @@ function handleTimer(){
 }
 
 $(document).ready(function() {
-  //ready and call the function
   $("#canvas2").mousedown(handleMouseDown)
   timer = setInterval(handleTimer, 30)
   drawCanvas()
