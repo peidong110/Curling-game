@@ -2,11 +2,11 @@ let ballBeingMoved;
 let tempSpeedX = 0;
 let tempSpeedY = 0;
 let friction = 0.97;
-
+//default to turn to false
 let yourTurn = false;
 
-let canvas1 = document.getElementById("canvas1")
-let canvas2 = document.getElementById("canvas2")
+let canvas1 = document.getElementById("canvas1");
+let canvas2 = document.getElementById("canvas2");
 let balls = [
 //initial status of the those balls
   {name:'ball1', x:170.0, y:500.0, radius:15, speedX:0.0, speedY:0.0, color:'yellow'},
@@ -27,7 +27,7 @@ socket.on('ballMove', function(data) {
   console.log("typeof: " + typeof data)
   let ballData = JSON.parse(data)
   for(ball of balls){
-    if(ball.name == ballData.name){
+    if(ball.name === ballData.name){
       ball.x = ballData.x
       ball.y = ballData.y
       ball.speedX = ballData.speedX
@@ -215,10 +215,10 @@ function ballCollision(ballMoving){
       || ballMoving.x+ballMoving.radius>ball.x-ball.radius && ballMoving.x+ballMoving.radius<ball.x+ball.radius){
       if(ballMoving.y-ballMoving.radius>ball.y-ball.radius && ballMoving.y-ballMoving.radius<ball.y+ball.radius
       || ballMoving.y+ballMoving.radius>ball.y-ball.radius && ballMoving.y+ballMoving.radius<ball.y+ball.radius){
-        ball.speedX = ballMoving.speedX
-        ball.speedY = ballMoving.speedY
-        ballMoving.speedX=0
-        ballMoving.speedY=0
+        ball.speedX = ballMoving.speedX;
+        ball.speedY = ballMoving.speedY;
+        ballMoving.speedX=0;
+        ballMoving.speedY=0;
         console.log("collide: " + ballMoving.name + " to " + ball.name)
       }
     }
@@ -227,7 +227,7 @@ function ballCollision(ballMoving){
 
 function handleTimer(){
   for(ball of balls){
-    if(ball.speedX!=0 || ball.speedY!=0){
+    if(ball.speedX!==0 || ball.speedY!==0){
       socket.emit("ballMove",JSON.stringify({name:ball.name, x:ball.x, y:ball.y, speedX: ball.speedX, speedY: ball.speedY}))
     }
     ballUpdate(ball)
@@ -236,7 +236,7 @@ function handleTimer(){
 
 $(document).ready(function() {
   //start programme
-  $("#canvas2").mousedown(handleMouseDown)
-  timer = setInterval(handleTimer, 30)
+  $("#canvas2").mousedown(handleMouseDown);
+  timer = setInterval(handleTimer, 30);
   drawCanvas()
-})
+});

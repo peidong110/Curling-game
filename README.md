@@ -21,18 +21,18 @@ NPM Version: 6.4.1 <br />
 Install: <br />
 socket.io is required for this programme<br />
 
-Test Instruction: <br />
-0.You need to install this socket.io module for this project.<br />
+Recommand Test Instruction: <br />(Based on our degisn of the programme, we recommand you to run the recommand instruction)<br />
+0.You need to install this socket.io module for this project. Type npm install socket.io in the directory with server.js<br />
 1.Locate the file directory that has server.js <br />
 2.Type node server.js in terminal <br />
-3.Open http://localhost:3000/assignment3 with browser in a tab and enter the name <br />
-4.Open another http://localhost:3000/assignment3 and enter the name<br />
-5.Open another with the same address and this tab will be spectating the game.<br />
-6.Drag the ball backforth and release to shoot forth, recommend drag longer distance to ensure large force<br />
-7.Maximum 2 players allowed at the same time, any more players will line up in the player waitlist<br />
-8.Any player exit the game or disconnect with the server will give the player in the waitlist a position to join the game, the player will play instead of the one who disconnected<br />
-9.The server will tell which player's turn, and only the player on his turn he can play the game.<br />
-
+3.open three client windows to join two players in the game, one player in the waitlist<br />
+4.player1's turn<br />
+5.player2's turn<br />
+6.close player2's window tab, disconnect<br />
+7.player1's turn<br />
+8.player3 join the game<br />
+9.player3's turn<br />
+10.You will not be able to continue play with the stone unless the website alerts so.
 
 Issue: <br />
 1.we may not be able to pull the stone and release it, but we make it like the way the video demonstrate for 1406<br />
@@ -40,11 +40,3 @@ Issue: <br />
 3.We draw them in two different canvases<br />
 4.(Solved)You need to click the screen to skip your round, We may not be able to let user willingly to stop his turn and become a spectator. We spend so much time on this assignment and it's really hard to accomplish this since we are not really familar with the socket.io module.<br />
 
-Recommend Instruction:<br />
-1.open three client windows to join two players in the game, one player in the waitlist<br />
-2.player1's turn<br />
-3.player2's turn<br />
-4.close player2's window tab, disconnect<br />
-5.player1's turn<br />
-6.player3 join the game<br />
-7.player3's turn<br />

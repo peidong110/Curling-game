@@ -53,7 +53,7 @@ function handler(request,response) {
       console.log("received data: ", receivedData)
       console.log("type: ", typeof receivedData)
 
-      if (request.method=="GET") {
+      if (request.method === "GET") {
         if (urlObj.pathname === "/") {
           urlObj.pathname += "index.html"
         }
@@ -101,31 +101,22 @@ io.on("connection",function (socket) {
       // socket.broadcast.to(socket.id).emit("showAlert")
       playerWait.push(socket.id)
       for(playerObj of playerWait){
-        if(playerObj.id == socket.id){
+        if(playerObj.id === socket.id){
           console.log(socket.id + "'s alert")
           socket.broadcast.to(playerObj.id).emit("showAlert",playerObj.id)
         }
       }
     }else{
       players.push(socket.id)
-      // Object.keys(io.sockets.connected).forEach(function (id) {
-      //   if(socket.id == id){
-      //     console.log(socket.id)
-      //   }
-      // })
-      // if(start){
-      //   io.sockets.emit("yourTurn", socket.id)
-      //   console.log(socket.id)
-      //   start = false
-      // }
-      if(clientNumber==2){
+
+      if(clientNumber===2){
         io.sockets.emit("yourTurn", socket.id)
       }
     }
   })
   socket.on("switchTurn", function (data){
     for(playerObj of players){
-      if(playerObj != data){
+      if(playerObj !== data){
         console.log(data + "'s turn")
         socket.broadcast.to(playerObj).emit("yourTurn", playerObj)
       }
@@ -133,28 +124,18 @@ io.on("connection",function (socket) {
   })
 
   socket.on("disconnect", function(){
-    // console.log("disconnect: " + socket.id)
-    // console.log("player list: " + players[0])
-    // console.log("player list: " + players[1])
-    // console.log("player wait list: " + playerWait[0])
+
     for(let i=0;i<players.length;i++){
-      if(players[i] == socket.id){
+      if(players[i] === socket.id){
         // console.log("process")
         players[i] = playerWait.shift()
       }
     }
-    // console.log("update player list: " + players[0])
-    // console.log("update player list: " + players[1])
-    // console.log("update player wait list: " + playerWait[0])
-  })
 
-  // socket.on("playerFound", function(){
-  //   console.log(Object.keys(socket.id) + " connect")
-  //   socket.connect("http://" + window.document.location.host, {'forceNew': true});
-  // })
+  })
 })
 
 
 console.log("Server Running at PORT: 3000  CNTL-C to quit")
 console.log("To Test:")
-console.log("Open several browsers at: http://localhost:3000/")
+console.log("Open several browsers at: http://localhost:3000/assignment3.html")
